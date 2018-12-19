@@ -4,10 +4,12 @@
 namespace App\Controller\TechNews;
 
 
+use App\Entity\Article;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class FrontController
+class FrontController extends AbstractController
 {
     /**
      *Page d'accueil
@@ -16,7 +18,8 @@ class FrontController
 
     public function index()
     {
-        return new Response("<html><body><h1>PAGE D'ACCUEIL</h1></body></html>");
+        #return new Response("<html><body><h1>PAGE D'ACCUEIL</h1></body></html>");
+        return $this->render('front/index.html.twig');
     }
 
     /**
@@ -39,7 +42,8 @@ class FrontController
      */
     public function categorie($slug)
     {
-        return new Response("<html><body><h1>PAGE DE CATEGORIE : $slug</h1></body></html>");
+        #return new Response("<html><body><h1>PAGE DE CATEGORIE : $slug</h1></body></html>");
+        return $this->render('front/categorie.html.twig');
     }
 
     /**
@@ -50,11 +54,17 @@ class FrontController
      * @param $categorie
      * @return Response
      */
-    public function article($id, $slug, $categorie)
+    public function article(Article $article)
     {
         # Exemple d'URL
         # /politique/vinci-autoroutes-va-envoyer-une-facture-aux-automobilistes_9841.html
-        return new Response("<html><body><h1>PAGE ARTICLE : $id</h1></body></html>");
+
+//        $article =$this->getDoctrine()
+//            ->getRepository(Article::class)
+//            ->find($id);
+
+        #return new Response("<html><body><h1>PAGE ARTICLE : $id</h1></body></html>");
+        return $this->render('front/article.html.twig',['article'=>$article]);
     }
 
 }

@@ -7,11 +7,16 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>
         {% block title %}
-
+            {% block page_title '' %} |
+            {% block site_title 'TechNews' %}
         {% endblock %}
     </title>
+    {% block stylesheets '' %}  {# '' = endblock#}
 </head>
 <body>
+    {% block body '' %}
+    {% block javascript '' %}
+    {% block final_javascript '' %}
 
 </body>
 </html>
