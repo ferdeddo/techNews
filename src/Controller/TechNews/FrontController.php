@@ -5,6 +5,7 @@ namespace App\Controller\TechNews;
 
 
 use App\Entity\Article;
+use App\Entity\Categorie;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -40,10 +41,27 @@ class FrontController extends AbstractController
      * @param $slug
      * @return Response
      */
-    public function categorie($slug)
+    public function categorie($slug, Categorie $categorie = null)
     {
+
+        #methode 1
+//        $categorie = $this->getDoctrine()
+//            ->getRepository(Categorie::class)
+//            ->findOneBy(['slug'=>$slug]);
+//        $articles = $categorie->getArticles();
+
+        #methode 2
+//        $articles = $this->getDoctrine()
+//            ->getRepository(Categorie::class)
+//            ->findOneBySlug([$slug])
+//            ->getArticles();
+
+        #methode 3
+
         #return new Response("<html><body><h1>PAGE DE CATEGORIE : $slug</h1></body></html>");
-        return $this->render('front/categorie.html.twig');
+        return $this->render('front/categorie.html.twig', [
+            '$articles'=>$categorie->getArticles()
+        ]);
     }
 
     /**
@@ -54,7 +72,7 @@ class FrontController extends AbstractController
      * @param $categorie
      * @return Response
      */
-    public function article(Article $article)
+    public function article($categorie, $slug, Article $article = null)
     {
         # Exemple d'URL
         # /politique/vinci-autoroutes-va-envoyer-une-facture-aux-automobilistes_9841.html
@@ -62,6 +80,17 @@ class FrontController extends AbstractController
 //        $article =$this->getDoctrine()
 //            ->getRepository(Article::class)
 //            ->find($id);
+
+        #On s'assure que l'article ne soit as null
+        if (null === $article ){
+            return $this->redirectToRoute('index', [], Response::HTTP_MOVED_PERMANENTLY);
+        }
+
+        #Vérification du SLUG
+        if ($article->getSlug() !== $slug
+            || $article->getCategorie()->getSlug() !== $categorie) {
+            return $this->redirectToRoute('front_article', ['categorie' => $article->getCategorie()->getSlug(), 'slug' => $article->getSlug(), 'id' => $article->getId()]);
+        }
 
         #return new Response("<html><body><h1>PAGE ARTICLE : $id</h1></body></html>");
         return $this->render('front/article.html.twig',['article'=>$article]);
